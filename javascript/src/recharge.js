@@ -1,7 +1,5 @@
 // Welcome to qq group: 1030115250
-// const {decryptData,encryptJSON} = require('./aesnet.js');
 const {hostaddr, netdata,keyBuffer} = require('./host.js');
-// const crypto = require('crypto');
 
 async function recharge(user,cards) {
     try {
@@ -9,7 +7,7 @@ async function recharge(user,cards) {
             user:user,     
             cards:cards,
         }
-        const response = await fetch(`${hostaddr}/api/users/recharge`, {
+        const response = await fetch(`${hostaddr}/api/users/addexpiry`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestbody),
@@ -19,7 +17,7 @@ async function recharge(user,cards) {
             throw new Error(`请求失败: ${errorData.error} (原因: ${errorData.reason})`); 
         }
         const responseData = await response.json();
-        return responseData.details;
+        return responseData;
     }
     catch (error) {
         console.error('调用加密接口出错:', error);

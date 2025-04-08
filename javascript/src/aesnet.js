@@ -1,7 +1,7 @@
 // Welcome to qq group: 1030115250
 const crypto = require('crypto');
 
-const encryptJSON = (data) => {
+const encryptJSON = (data,currentKey) => {
     try {
         // 每次加密生成新的 12 字节随机 IV（符合 GCM 最佳实践）[1,5](@ref)
         const iv = crypto.randomBytes(12); 

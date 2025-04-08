@@ -11,11 +11,10 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('electronAPI', {
   sendAction: (actionType, data) => {
-    if (['login', 'register', 'charge'].includes(actionType)) {  // 校验合法操作类型
+    if (['login', 'register', 'charge', 'change-password'].includes(actionType)) {  // 校验合法操作类型
       ipcRenderer.send('app-action', actionType, data)
     }
   },
-  sendAction: (actionType, data) => ipcRenderer.send('app-action', actionType, data),
   onResponse: (callback) => ipcRenderer.on('action-response', callback)
 })
 

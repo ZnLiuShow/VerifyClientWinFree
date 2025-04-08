@@ -1,3 +1,5 @@
 /javascript/node_modules
 javascript/README.md
 javascript/package-lock.json
+javascript/files.txt
+javascript/Generate-ProjectTree.ps1
