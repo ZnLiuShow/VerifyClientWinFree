@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>FreeClient</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <!-- 标签导航 -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="tab0">登录</button>
+    <button class="tab-btn" data-tab="tab1">注册</button>
+    <button class="tab-btn" data-tab="tab2">充值</button>
+    <button class="tab-btn" data-tab="tab3">更改密码</button>
+  </div>
+
+  <!-- 标签内容 -->
+  <div class="tab-content">
+    <!-- 登录 -->
+    <div id="tab0" class="tab-pane active">
+      <input type="text" id="loginUser" placeholder="用户名">
+      <input type="password" id="loginPass" placeholder="密码">
+      <button id="loginBtn">登录</button>
+    </div>
+
+    <!-- 注册 -->
+    <div id="tab1" class="tab-pane">
+      <input type="text" id="regUser" placeholder="用户名">
+      <input type="password" id="regPass" placeholder="密码">
+      <input type="password" id="regSafePass" placeholder="安全密码">
+      <textarea id="regCards" rows="5" placeholder="卡密（每行一个）"></textarea>
+      <button id="regBtn">注册</button>
+    </div>
+
+    <!-- 充值 -->
+    <div id="tab2" class="tab-pane">
+      <input type="text" id="chargeUser" placeholder="用户名">
+      <textarea id="chargeCards" rows="5" placeholder="卡密（每行一个）"></textarea>
+      <button id="chargeBtn">充值</button>
+    </div>
+
+    <!-- 更改密码 -->
+    <div id="tab3" class="tab-pane ">
+      <input type="text" id="changeUser" placeholder="用户名">
+      <input type="password" id="changeNewPassword" placeholder="新密码">
+      <input type="password" id="changeSafePassword" placeholder="安全密码">
+      <button id="changeBtn">确认更改</button>
+    </div>
+  </div>
+
+  <script src="./renderer.js"></script>
+</body>
+</html>

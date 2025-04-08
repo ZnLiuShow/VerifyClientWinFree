@@ -1,0 +1,59 @@
+/* 标签导航样式 */
+.tab-nav {
+    display: flex; /* 启用弹性布局 */
+    flex-direction: row; /* 水平排列（默认值可不写） */
+    gap: 5px; /* 按钮间距 */
+    padding: 15px;
+    background: #f0f0f0;
+    overflow-x: auto; /* 允许横向滚动（适应窄屏） */
+  }
+  
+  .tab-btn {
+    padding: 10px 20px;
+    margin-right: 5px;
+    border: none;
+    cursor: pointer;
+    background: #c50c8d;
+  }
+  
+  .tab-btn.active {
+    background: #1e6e4d;
+    border-bottom: 2px solid #2196F3;
+  }
+  
+  /* 标签内容区域 */
+  .tab-pane {
+    display: none;
+    padding: 20px;
+  }
+  
+  .tab-pane.active {
+    display: block;
+  }
+  
+  /* 通用输入样式 */
+  input, textarea {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    overflow-y: auto;
+  }
+  
+  button {
+    display: block;
+    width: 30%;
+    margin: 15px auto;
+    padding: 10px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
