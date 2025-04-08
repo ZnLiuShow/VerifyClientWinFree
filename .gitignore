@@ -3,3 +3,6 @@ javascript/README.md
 javascript/package-lock.json
 javascript/files.txt
 javascript/Generate-ProjectTree.ps1
+/CppNaNa/.vs
+/CppNaNa/CppNaNa/x64
+/CppNaNa/x64
