@@ -1,4 +1,5 @@
-﻿#include <nana/gui.hpp>
+﻿// Welcome to qq group: 1030115250
+#include <nana/gui.hpp>
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>

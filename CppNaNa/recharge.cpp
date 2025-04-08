@@ -1,3 +1,4 @@
+// Welcome to qq group: 1030115250
 #include "recharge.hpp"
 
 json RechargeManager::recharge(const std::string& user, const json& cards) {

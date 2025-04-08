@@ -1,3 +1,4 @@
+// Welcome to qq group: 1030115250
 #include "register.hpp"
 #include <openssl/sha.h>
 
