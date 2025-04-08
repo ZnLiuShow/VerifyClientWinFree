@@ -141,6 +141,8 @@
     <ClInclude Include="change.hpp" />
     <ClInclude Include="host.hpp" />
     <ClInclude Include="login.hpp" />
+    <ClInclude Include="recharge.hpp" />
+    <ClInclude Include="register.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="register.cpp">
-      <Filter>头文件</Filter>
-    </ClCompile>
-    <ClCompile Include="recharge.cpp">
-      <Filter>头文件</Filter>
-    </ClCompile>
     <ClCompile Include="aesnet.hpp">
       <Filter>头文件</Filter>
     </ClCompile>
@@ -36,6 +30,12 @@
     <ClCompile Include="change.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="register.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="recharge.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="login.hpp">
@@ -45,6 +45,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="change.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="register.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="recharge.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
