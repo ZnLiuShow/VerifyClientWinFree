@@ -129,7 +129,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="aesnet.hpp" />
+    <ClCompile Include="change.cpp" />
+    <ClCompile Include="host.cpp" />
+    <ClCompile Include="login.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="recharge.cpp" />
+    <ClCompile Include="register.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="change.hpp" />
+    <ClInclude Include="host.hpp" />
+    <ClInclude Include="login.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
