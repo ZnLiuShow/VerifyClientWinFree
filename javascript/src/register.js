@@ -1,7 +1,7 @@
 // Welcome to qq group: 1030115250
-const {decryptData,encryptJSON} = require('./aesnet.js');
+// const {decryptData,encryptJSON} = require('./aesnet.js');
 const {hostaddr, netdata,keyBuffer} = require('./host.js');
-const crypto = require('crypto');
+// const crypto = require('crypto');
 
 async function register(user, password,question,answer,cards) {
     try {

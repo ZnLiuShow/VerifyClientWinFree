@@ -43,7 +43,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     const data = {
       user: document.getElementById('regUser').value,
       pass: document.getElementById('regPass').value,
-      safePass: document.getElementById('regSafePass').value,
+      question: document.getElementById('regQuestion').value,
+      answer: document.getElementById('regAnswer').value,
       cards: document.getElementById('regCards').value.split('\n')
     }
     window.electronAPI.sendAction('register', data)
