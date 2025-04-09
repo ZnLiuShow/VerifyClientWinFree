@@ -11,7 +11,7 @@ public:
         const std::string& password,
         const std::string& question,
         const std::string& answer,
-        const json& cards = nullptr
+        const json& cards = json()
     );
 
 private:

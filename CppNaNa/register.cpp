@@ -30,9 +30,12 @@ json RegisterManager::registerUser(
         // 发送请求
         std::string readBuffer;
         curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/register").c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L); // 明确设置为POST请求
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.dump().c_str());
+        // 设置正确的回调函数和数据指针
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, LoginManager::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-
+  
         struct curl_slist* headers = nullptr;
         headers = curl_slist_append(headers, "Content-Type: application/json");
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -49,10 +52,20 @@ json RegisterManager::registerUser(
         long response_code;
         curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
         if (response_code != 200) {
-            json errorData = json::parse(readBuffer);
-            throw std::runtime_error("Registration failed: " +
-                errorData["error"].get<std::string>() +
-                " (原因: " + errorData["reason"].get<std::string>() + ")");
+            try {
+                json errorData = json::parse(readBuffer);
+                MessageBoxA(0, errorData.dump().c_str(), 0, 0);
+                // 安全获取字段，允许默认值
+                std::string errorMsg = errorData.value("error", "unknown error");
+                std::string reason = errorData.value("reason", "unknown reason");
+                throw std::runtime_error("Registration failed: " + errorMsg +
+                    " (原因: " + reason + ")");
+            }
+            catch (const json::exception& e) {
+                // 捕获JSON解析异常，输出原始响应
+                throw std::runtime_error("Invalid error response: " + std::string(e.what())
+                    + "\nResponse Body: " + readBuffer);
+            }
         }
 
         return json::parse(readBuffer);

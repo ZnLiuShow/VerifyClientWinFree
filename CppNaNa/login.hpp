@@ -18,6 +18,6 @@ public:
     std::string sha512(const std::string& input);
 
     CURL* curl;
-private:
+
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* s);
 };

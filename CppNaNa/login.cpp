@@ -66,15 +66,34 @@ json LoginManager::sendEncryptRequest() {
 
 std::string LoginManager::sha512(const std::string& input) {
     unsigned char hash[SHA512_DIGEST_LENGTH];
-    SHA512_CTX sha512;
-    SHA512_Init(&sha512);
-    SHA512_Update(&sha512, input.c_str(), input.size());
-    SHA512_Final(hash, &sha512);
+    EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
+    if (!mdctx) {
+        throw std::runtime_error("Failed to create EVP context");
+    }
 
-    char output[128];
-    for (int i = 0; i < SHA512_DIGEST_LENGTH; i++)
-        sprintf(output + (i * 2), "%02x", hash[i]);
-    return std::string(output, 128);
+    if (EVP_DigestInit_ex(mdctx, EVP_sha512(), nullptr) != 1) {
+        EVP_MD_CTX_free(mdctx);
+        throw std::runtime_error("Failed to initialize SHA512 digest");
+    }
+
+    if (EVP_DigestUpdate(mdctx, input.c_str(), input.size()) != 1) {
+        EVP_MD_CTX_free(mdctx);
+        throw std::runtime_error("Failed to update SHA512 digest");
+    }
+
+    unsigned int hash_len;
+    if (EVP_DigestFinal_ex(mdctx, hash, &hash_len) != 1 || hash_len != SHA512_DIGEST_LENGTH) {
+        EVP_MD_CTX_free(mdctx);
+        throw std::runtime_error("Failed to finalize SHA512 digest");
+    }
+    EVP_MD_CTX_free(mdctx);
+
+    std::stringstream ss;
+    ss << std::hex << std::setfill('0');
+    for (int i = 0; i < SHA512_DIGEST_LENGTH; i++) {
+        ss << std::setw(2) << static_cast<unsigned int>(hash[i]);
+    }
+    return ss.str();
 }
 
 bool LoginManager::login(const std::string& username, const std::string& password) {

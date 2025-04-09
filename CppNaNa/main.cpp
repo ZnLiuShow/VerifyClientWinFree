@@ -1,14 +1,18 @@
 ﻿// Welcome to qq group: 1030115250
+#include <Windows.h>
 #include <nana/gui.hpp>
 #include <nana/gui/widgets/label.hpp>
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/group.hpp>
-
+#include "register.hpp"
 // 定义UTF-8转换宏
 #define TR(str) nana::charset(str).to_bytes(nana::unicode::utf8)
 
-int WinMain()
+int APIENTRY WinMain(HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR     lpCmdLine,
+    int       nCmdShow)
 {
     using namespace nana;
 
@@ -153,29 +157,41 @@ int WinMain()
         });
 
     // 注册按钮
+// 注册按钮
     reg_btn.events().click([&]
         {
-            std::string user = reg_user.caption();
-            std::string pass = reg_pass.caption();
-            std::string question = reg_question.caption();
-            std::string answer = reg_answer.caption();
-            std::string cards = reg_cards.text();
+            try
+            {
+                std::string user = reg_user.caption();
+                std::string pass = reg_pass.caption();
+                std::string question = reg_question.caption();
+                std::string answer = reg_answer.caption();
+                std::string cards = reg_cards.text();
 
-            // 分割卡密
-            std::vector<std::string> card_list;
-            std::istringstream iss(cards);
-            std::string line;
-            while (std::getline(iss, line))
-                if (!line.empty()) card_list.push_back(line);
+                // 分割卡密
+                std::vector<std::string> card_list;
+                std::istringstream iss(cards);
+                std::string line;
+                while (std::getline(iss, line))
+                    if (!line.empty()) card_list.push_back(line);
 
-            // 这里添加注册逻辑，例如：
-            msgbox mb(fm, TR("注册信息"));
-            mb << TR("用户名: ") << user << "\n"
-                << TR("密码: ") << pass << "\n"
-                << TR("安全问题: ") << question << "\n"
-                << TR("安全答案: ") << answer << "\n"
-                << TR("卡密数量: ") << card_list.size();
-            mb.show();
+                RegisterManager rm;
+                json jcards = json::array(); // 确保默认是空数组
+                if (!card_list.empty())
+                    jcards = card_list;
+
+                auto r = rm.registerUser(user, pass, question, answer, jcards);
+
+                msgbox mb(fm, TR("注册成功"));
+                mb << TR("注册信息已提交");
+                mb.show();
+            }
+            catch (const std::exception& e)
+            {
+                msgbox mb(fm, TR("注册错误"), msgbox::ok);
+                mb.icon(msgbox::icon_error) << TR("错误信息: ") << e.what();
+                mb.show();
+            }
         });
 
     // 充值按钮
