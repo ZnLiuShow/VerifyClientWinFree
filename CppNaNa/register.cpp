@@ -27,11 +27,15 @@ json RegisterManager::registerUser(
             requestBody["cards"] = cards;
         }
 
+        // 将JSON数据序列化为字符串并保存到局部变量
+        std::string postData = requestBody.dump();
+
         // 发送请求
         std::string readBuffer;
         curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/register").c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1L); // 明确设置为POST请求
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.dump().c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());
         // 设置正确的回调函数和数据指针
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, LoginManager::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
@@ -54,7 +58,6 @@ json RegisterManager::registerUser(
         if (response_code != 200) {
             try {
                 json errorData = json::parse(readBuffer);
-                MessageBoxA(0, errorData.dump().c_str(), 0, 0);
                 // 安全获取字段，允许默认值
                 std::string errorMsg = errorData.value("error", "unknown error");
                 std::string reason = errorData.value("reason", "unknown reason");
