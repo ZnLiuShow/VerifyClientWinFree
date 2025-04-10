@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 
 module.exports = { 
-  hostaddr:"http://localhost:3000", 
+  hostaddr:"http://localhost", //这里后端需要自己配反向代理，去掉/api/和转发端口
   netdata:{
     mytoken: "",
     aeskey: null,

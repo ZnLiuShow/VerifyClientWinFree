@@ -7,7 +7,7 @@ async function recharge(user,cards) {
             user:user,     
             cards:cards,
         }
-        const response = await fetch(`${hostaddr}/api/users/addexpiry`, {
+        const response = await fetch(`${hostaddr}/api/v1/users/addexpiry`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestbody),

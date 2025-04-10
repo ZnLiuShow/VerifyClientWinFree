@@ -15,7 +15,7 @@ async function register(user, password,question,answer,cards) {
             answer: answerHash,
             ...(cards && { cards:cards })
         }
-        const response = await fetch(`${hostaddr}/api/users/register`, {
+        const response = await fetch(`${hostaddr}/api/v1/users/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestbody),
