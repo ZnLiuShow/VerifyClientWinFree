@@ -7,7 +7,7 @@
 #include <nana/gui/widgets/group.hpp>
 #include "register.hpp"
 #include "recharge.hpp"
-
+#include "change.hpp"
 // 定义UTF-8转换宏
 #define TR(str) nana::charset(str).to_bytes(nana::unicode::utf8)
 
@@ -148,14 +148,24 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     // 登录按钮
     login_btn.events().click([&]
         {
-            std::string username = login_user.caption();
-            std::string password = login_pass.caption();
-
-            // 这里添加登录逻辑，例如：
-            msgbox mb(fm, TR("登录信息"));
-            mb << TR("用户名: ") << username << "\n"
-                << TR("密码: ") << password;
-            mb.show();
+            try {
+                std::string username = login_user.caption();
+                std::string password = login_pass.caption();
+                if (username == "" || password == "")
+                    throw std::runtime_error(TR("用户名或密码为空"));
+                LoginManager lm;
+                auto r = lm.login(username, password);
+                // 这里添加登录逻辑，例如：
+                msgbox mb(fm, TR("登录信息"));
+                mb << (r ? TR("登录成功") : TR("登录失败"));
+                mb.show();
+            }
+            catch (const std::exception& e)
+            {
+                msgbox mb(fm, TR("登录错误"), msgbox::ok);
+                mb.icon(msgbox::icon_error) << TR("错误信息:\n ") << e.what();
+                mb.show();
+            }
         });
 
     // 注册按钮
@@ -202,53 +212,72 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     // 充值按钮
     charge_btn.events().click([&]
         {
-            std::string user = charge_user.caption();
-            std::string cards = charge_cards.text();
+            try {
+                std::string user = charge_user.caption();
+                std::string cards = charge_cards.text();
 
-            // 分割卡密
-            std::vector<std::string> card_list;
-            std::istringstream iss(cards);
-            std::string line;
-            while (std::getline(iss, line)) {
-                line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
-                if (!line.empty() && line != "") card_list.push_back(line);
-            }
-           
+                // 分割卡密
+                std::vector<std::string> card_list;
+                std::istringstream iss(cards);
+                std::string line;
+                while (std::getline(iss, line)) {
+                    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+                    if (!line.empty() && line != "") card_list.push_back(line);
+                }
 
-            RechargeManager rm;
-            json jcards = json::array(); // 确保默认是空数组
-            if (!card_list.empty())
-                jcards = card_list;
-            else{
-                msgbox mb(fm, TR("充值失败"));
-                mb << TR("请填写卡密！");
+
+                RechargeManager rm;
+                json jcards = json::array(); // 确保默认是空数组
+                if (!card_list.empty())
+                    jcards = card_list;
+                else {
+                    msgbox mb(fm, TR("充值失败"));
+                    mb << TR("请填写卡密！");
+                    mb.show();
+                    return;
+                }
+
+                auto response = rm.recharge(user, card_list);
+                bool success = response["success"];
+                std::string message = response["message"];
+                // 这里添加充值逻辑，例如：
+                msgbox mb(fm, TR("充值成功"));
+                mb << TR("用户名: ") << user << "\n"
+                    << TR("充值时长:\n") << message;
                 mb.show();
-                return;
             }
-
-            auto response = rm.recharge(user, card_list);
-            // 这里添加充值逻辑，例如：
-            msgbox mb(fm, TR("充值信息"));
-            mb << TR("用户名: ") << user << "\n"
-                << TR("卡密数量: ") << card_list.size();
-            mb.show();
+            catch (const std::exception& e)
+            {
+                msgbox mb(fm, TR("充值错误"), msgbox::ok);
+                mb.icon(msgbox::icon_error) << TR("错误信息: ") << e.what();
+                mb.show();
+            }            
         });
 
     // 修改密码按钮
     change_btn.events().click([&]
         {
-            std::string user = change_user.caption();
-            std::string new_pass = change_new_password.caption();
-            std::string question = change_question.caption();
-            std::string answer = change_answer.caption();
+            try {
+                std::string user = change_user.caption();
+                std::string new_pass = change_new_password.caption();
+                std::string question = change_question.caption();
+                std::string answer = change_answer.caption();
 
-            // 这里添加修改密码逻辑，例如：
-            msgbox mb(fm, TR("修改密码"));
-            mb << TR("用户名: ") << user << "\n"
-                << TR("新密码: ") << new_pass << "\n"
-                << TR("安全问题: ") << question << "\n"
-                << TR("安全答案: ") << answer;
-            mb.show();
+                if (user == "" || new_pass == "" || question == "" || answer == "")
+                    throw std::runtime_error(TR("请填写所有必要信息！"));
+                ChangeManager cm;
+                auto r = cm.changepassword(user, new_pass, question, answer);
+                // 这里添加修改密码逻辑，例如：
+                msgbox mb(fm, TR("修改密码"));
+                mb << (r ?TR("修改密码成功"): TR("修改密码失败"));
+                mb.show();
+            }
+            catch (const std::exception& e)
+            {
+                msgbox mb(fm, TR("修改密码错误"), msgbox::ok);
+                mb.icon(msgbox::icon_error) << TR("错误信息:\n ") << e.what();
+                mb.show();
+            }     
         });
 
     // 显示主窗口

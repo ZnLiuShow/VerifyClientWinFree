@@ -3,6 +3,7 @@
 #include <openssl/sha.h>
 #include <sstream>
 #include <stdexcept>
+#include <chrono>
 
 LoginManager::LoginManager() : curl(curl_easy_init()) {
     if (!curl) throw std::runtime_error("CURL initialization failed");
@@ -36,9 +37,10 @@ json LoginManager::sendEncryptRequest() {
     json requestBody = { {"key", keyBase64} };
     std::string postData = requestBody.dump();
 
-    curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users").c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/v1/users").c_str());
     curl_easy_setopt(curl, CURLOPT_POST, 1L);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
@@ -115,7 +117,7 @@ bool LoginManager::login(const std::string& username, const std::string& passwor
         json data = {
             {"user", username},
             {"password", sha512(password)},
-            {"timestamp", time(nullptr)}
+            {"timestamp", timestamp_millis()}
         };
 
         EncryptedData encryptedData = AES256GCM::encryptJSON(data.dump(), netdata.aeskey);
@@ -127,9 +129,13 @@ bool LoginManager::login(const std::string& username, const std::string& passwor
             {"iv", encryptedData.iv}
         };
 
+        std::string postData = loginRequestBody.dump();
+
         std::string readBuffer;
-        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/login").c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, loginRequestBody.dump().c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/v1/users/login").c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());
+
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
         struct curl_slist* headers = nullptr;
@@ -172,4 +178,13 @@ bool LoginManager::login(const std::string& username, const std::string& passwor
     catch (const std::exception& e) {
         throw std::runtime_error("Login failed: " + std::string(e.what()));
     }
+}
+
+long long LoginManager::timestamp_millis() {
+    // 获取当前时间点
+    auto now = std::chrono::system_clock::now();
+
+    // 将时间点转换为自纪元以来的毫秒数
+    auto value = std::chrono::system_clock::now().time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(value).count();
 }

@@ -19,7 +19,7 @@ public:
     json sendEncryptRequest();
     bool login(const std::string& username, const std::string& password);
     std::string sha512(const std::string& input);
-
+    long long timestamp_millis();
     CURL* curl;
 
     static size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* s);

@@ -12,7 +12,7 @@ json RechargeManager::recharge(const std::string& user, const json& cards) {
         std::string postData = requestBody.dump();
         // 配置CURL
         std::string readBuffer;
-        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/addexpiry").c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/v1/users/addexpiry").c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1L); // 明确设置为POST请求
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());

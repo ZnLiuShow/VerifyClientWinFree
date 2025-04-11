@@ -26,7 +26,7 @@ bool ChangeManager::changepassword(const std::string& username,
             {"newpassword", sha512(newpassword)},
             {"question", sha512(question)},
             {"answer", sha512(answer)},
-            {"timestamp", time(nullptr)}
+            {"timestamp", LoginManager::timestamp_millis()}
         };
 
         // 加密数据
@@ -39,10 +39,14 @@ bool ChangeManager::changepassword(const std::string& username,
             {"iv", encryptedData.iv}
         };
 
+        std::string postData = requestBody.dump();
         // 发送修改密码请求
         std::string readBuffer;
-        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/change").c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.dump().c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/v1/users/change").c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());
+
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
         struct curl_slist* headers = nullptr;
