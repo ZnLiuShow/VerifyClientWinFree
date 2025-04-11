@@ -3,7 +3,10 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (QApplication, QWidget, QTabWidget, QLineEdit,
                              QPushButton, QTextEdit, QVBoxLayout, QHBoxLayout,
                              QLabel, QFormLayout, QSpacerItem, QSizePolicy, QMessageBox)
-
+from src.register import register
+from src.recharge import recharge
+from src.login import login
+from src.change import changepassword
 class StyledTabWidget(QTabWidget):
     def __init__(self):
         super().__init__()
@@ -240,13 +243,16 @@ class MainWindow(QWidget):
         if not username or not password:
             self.show_warning("登录", "用户名和密码不能为空")
             return
-            
-        # 示例验证逻辑（实际应连接后端API）
-        if username == "admin" and password == "123456":
-            self.show_success("登录成功", f"欢迎回来，{username}！")
-            self.clear_login_fields()
-        else:
-            self.show_error("登录失败", "用户名或密码错误")
+        
+        try: 
+            r = login(username, password)
+            if r:    
+                self.show_success("登录成功", f"欢迎回来，{username}！")
+                self.clear_login_fields()
+            else:
+                self.show_error("登录失败", "用户名或密码错误")
+        except Exception as e:
+            self.show_error("登录失败", str(e))
 
     def handle_register(self):
         """注册按钮处理逻辑"""
@@ -265,11 +271,17 @@ class MainWindow(QWidget):
         if not data['question'] or not data['answer']:
             self.show_warning("注册", "安全问题和答案必须填写")
             return
+        try: 
+            response = register(data['username'], data['password'], data['question'], data['answer'], data['cards'])   
             
-        # 示例处理逻辑
-        print("注册数据：", data)  # 调试输出
-        self.show_success("注册成功", "账号已创建，请妥善保管安全信息")
-        self.clear_register_fields()
+            if response.get('success', False):
+                self.show_success("注册成功", "账号已创建，请妥善保管安全信息")
+                self.clear_register_fields()
+            else:
+                error_msg = response.get('message', '未知错误')
+                self.show_error("注册失败", error_msg)
+        except Exception as e:
+            self.show_error("注册失败", str(e))
 
     def handle_charge(self):
         """充值按钮处理逻辑"""
@@ -283,11 +295,18 @@ class MainWindow(QWidget):
         if len(cards) < 1:
             self.show_warning("充值", "至少需要输入一个卡密")
             return
-            
-        # 示例处理逻辑
-        print(f"用户 {username} 正在充值卡密：{cards}")  # 调试输出
-        self.show_success("充值成功", f"已成功应用 {len(cards)} 个卡密")
-        self.clear_charge_fields()
+        try:
+            response = recharge(username, cards)
+            if not response.get('success', False):
+                error_msg = response.get('message', '未知错误')
+                self.show_error("充值失败", error_msg)
+                return
+            else:
+                self.show_success("充值成功", f"卡密已成功充值\n{response.get('message', '0 hours')}")
+                self.clear_register_fields()        
+        except Exception as e:
+            self.show_error("充值失败", str(e))         
+                
 
     def handle_change_password(self):
         """修改密码处理逻辑"""
@@ -299,13 +318,17 @@ class MainWindow(QWidget):
         if not all([username, new_pass, question, answer]):
             self.show_warning("修改密码", "所有字段均为必填项")
             return
-            
-        # 示例验证逻辑
-        if question == "最喜欢的颜色？" and answer == "蓝色":
-            self.show_success("修改成功", "密码已更新")
-            self.clear_change_fields()
-        else:
-            self.show_error("验证失败", "安全问题或答案不匹配")
+        
+        try:
+            r = changepassword(username, new_pass, question, answer)
+            if r:
+                self.show_success("修改密码成功", "密码已成功修改")
+                self.clear_change_fields()
+            else:
+                self.show_error("修改密码失败", "修改密码失败")
+        except Exception as e:
+            self.show_error("修改密码失败", str(e))
+
 
     # 辅助方法
     def show_warning(self, title, message):

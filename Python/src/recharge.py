@@ -1,7 +1,7 @@
 import requests
 import json
 from typing import Dict, Any
-from host import hostaddr
+from .host import hostaddr
 
 def recharge(user: str, cards: list) -> Dict[str, Any]:
     """为用户充值卡密（Python翻译版）"""

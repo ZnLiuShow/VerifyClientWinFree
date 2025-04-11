@@ -6,3 +6,6 @@ javascript/Generate-ProjectTree.ps1
 /CppNaNa/.vs
 /CppNaNa/CppNaNa/x64
 /CppNaNa/x64
+/Python/src/__pycache__
+*.ps1
+Python/files.txt

@@ -2,7 +2,7 @@ import hashlib
 import json
 from typing import Optional, Dict, Any
 import requests
-from host import hostaddr, netdata, keyBuffer  # 导入翻译后的配置
+from .host import hostaddr, netdata, keyBuffer  
 
 def register(user: str, password: str, question: str, answer: str, cards: Optional[str] = None) -> Dict[str, Any]:
     """
