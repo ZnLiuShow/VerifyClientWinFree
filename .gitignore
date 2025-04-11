@@ -9,3 +9,4 @@ javascript/Generate-ProjectTree.ps1
 /Python/src/__pycache__
 *.ps1
 Python/files.txt
+/rust/target
