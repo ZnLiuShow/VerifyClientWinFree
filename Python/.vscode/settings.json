@@ -1,0 +1,5 @@
+{
+    "python.defaultInterpreterPath": "E:/ProgramData/anaconda3/envs/soft_venv/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "cmake.sourceDirectory": "D:/Source_Python/yolo11/examples/YOLOv8-CPP-Inference"
+}
