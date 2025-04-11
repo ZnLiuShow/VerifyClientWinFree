@@ -1,4 +1,7 @@
 // Welcome to qq group: 1030115250
+#ifndef AESNET_HPP
+#define AESNET_HPP
+
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <sstream>
@@ -153,3 +156,6 @@ public:
         return result;
     }
 };
+
+#endif
+

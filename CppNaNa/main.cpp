@@ -6,6 +6,8 @@
 #include <nana/gui/widgets/textbox.hpp>
 #include <nana/gui/widgets/group.hpp>
 #include "register.hpp"
+#include "recharge.hpp"
+
 // 定义UTF-8转换宏
 #define TR(str) nana::charset(str).to_bytes(nana::unicode::utf8)
 
@@ -157,7 +159,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
         });
 
     // 注册按钮
-// 注册按钮
     reg_btn.events().click([&]
         {
             try
@@ -172,8 +173,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                 std::vector<std::string> card_list;
                 std::istringstream iss(cards);
                 std::string line;
-                while (std::getline(iss, line))
-                    if (!line.empty()) card_list.push_back(line);
+                while (std::getline(iss, line)) {
+                    line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+                    if (!line.empty() && line != "") card_list.push_back(line);
+                }
 
                 RegisterManager rm;
                 json jcards = json::array(); // 确保默认是空数组
@@ -206,9 +209,24 @@ int APIENTRY WinMain(HINSTANCE hInstance,
             std::vector<std::string> card_list;
             std::istringstream iss(cards);
             std::string line;
-            while (std::getline(iss, line))
-                if (!line.empty()) card_list.push_back(line);
+            while (std::getline(iss, line)) {
+                line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
+                if (!line.empty() && line != "") card_list.push_back(line);
+            }
+           
 
+            RechargeManager rm;
+            json jcards = json::array(); // 确保默认是空数组
+            if (!card_list.empty())
+                jcards = card_list;
+            else{
+                msgbox mb(fm, TR("充值失败"));
+                mb << TR("请填写卡密！");
+                mb.show();
+                return;
+            }
+
+            auto response = rm.recharge(user, card_list);
             // 这里添加充值逻辑，例如：
             msgbox mb(fm, TR("充值信息"));
             mb << TR("用户名: ") << user << "\n"

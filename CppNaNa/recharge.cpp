@@ -8,10 +8,16 @@ json RechargeManager::recharge(const std::string& user, const json& cards) {
         requestBody["user"] = user;
         requestBody["cards"] = cards;
 
+        // 将JSON数据序列化为字符串并保存到局部变量
+        std::string postData = requestBody.dump();
         // 配置CURL
         std::string readBuffer;
         curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/addexpiry").c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, requestBody.dump().c_str());
+        curl_easy_setopt(curl, CURLOPT_POST, 1L); // 明确设置为POST请求
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());
+        // 设置正确的回调函数和数据指针
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, LoginManager::WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
         // 设置请求头
