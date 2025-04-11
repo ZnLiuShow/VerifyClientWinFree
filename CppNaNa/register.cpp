@@ -32,7 +32,7 @@ json RegisterManager::registerUser(
 
         // 发送请求
         std::string readBuffer;
-        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/users/register").c_str());
+        curl_easy_setopt(curl, CURLOPT_URL, (hostaddr + "/api/v1/users/register").c_str());
         curl_easy_setopt(curl, CURLOPT_POST, 1L); // 明确设置为POST请求
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, postData.size());

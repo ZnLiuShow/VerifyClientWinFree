@@ -180,10 +180,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                 if (!card_list.empty())
                     jcards = card_list;
 
-                auto r = rm.registerUser(user, pass, question, answer, jcards);
-
+                auto response = rm.registerUser(user, pass, question, answer, jcards);
+                bool success = response["success"];
+                std::string message = response["message"];
+   
                 msgbox mb(fm, TR("注册成功"));
-                mb << TR("注册信息已提交");
+                mb << TR("注册信息已提交\n") << message;
                 mb.show();
             }
             catch (const std::exception& e)
