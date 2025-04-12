@@ -10,3 +10,4 @@ javascript/Generate-ProjectTree.ps1
 *.ps1
 Python/files.txt
 /rust/target
+/x86lib/target
